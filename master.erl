@@ -8,8 +8,8 @@
 %%%-------------------------------------------------------------------
 -module(master).
 -author("bhagyaraj").
--define(WORK_UNIT, 1000).
--define(NUM_OF_ACTORS, 10000).
+-define(WORK_UNIT, 250).
+-define(NUM_OF_ACTORS, 30000).
 
 %% API
 -export([supervising_boss_actor/1]).
@@ -44,8 +44,8 @@ bitcoins_received(Num_of_messages, Num_of_bitcoins) ->
 
 %% Supervises all the spawned actors and listens to their messages
 supervising_boss_actor(K) ->
-  %% For calculating the number of cores present in the system
-  Cores_present_in_node = erlang:system_info(logical_processors_available),
+  erlang:statistics(runtime),
+  erlang:statistics(wall_clock),
 
   %% Spawn the workers
   create_mining_workers(self(), ?NUM_OF_ACTORS, K),
@@ -53,4 +53,12 @@ supervising_boss_actor(K) ->
   %% Listen and print the bitcoins as they are received, Num_of_Actors = Num_of_messages to be received
   bitcoins_received(?NUM_OF_ACTORS, 0),
 
+  {_, CPUTime} = erlang:statistics(runtime),
+  {_, RealTime} = erlang:statistics(wall_clock),
+
+  io:format("CPU time, Real time = ~w, ~w seconds~n", [CPUTime/1000, RealTime/1000]),
+  io:format("Cores effectively used in mining = ~w~n", [CPUTime/RealTime]),
+
+  %% For calculating the number of cores present in the system
+  Cores_present_in_node = erlang:system_info(logical_processors_available),
   io:format("Number of cores ~w~n", [Cores_present_in_node]).

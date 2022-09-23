@@ -6,7 +6,7 @@
 %%% @end
 %%% Created : 20. Sep 2022 3:31 PM
 %%%-------------------------------------------------------------------
--module(util).
+-module(utils).
 -author("bhagyaraj").
 
 %% API

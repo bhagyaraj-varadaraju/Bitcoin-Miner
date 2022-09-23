@@ -15,7 +15,7 @@
 
 mine_bitcoin(Server_PID, Workunit, K) ->
   %% Create the string to be hashed in format "gator_id;xxxxx"
-  String_to_be_hashed = util:gator_id_with_rand(?RAND_SUFFIX_LEN),
+  String_to_be_hashed = utils:gator_id_with_rand(?RAND_SUFFIX_LEN),
 
   %% Calculate sha256 digest for the generated string
   Digest = io_lib:format("~64.16.0b", [binary:decode_unsigned(crypto:hash(sha256, String_to_be_hashed))]),
