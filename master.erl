@@ -12,7 +12,7 @@
 -define(NUM_OF_ACTORS, 30000).
 
 %% API
--export([supervising_boss_actor/1]).
+-export([supervising_boss_actor/1, start_server/1]).
 
 %% For spawning the given number of actors
 create_mining_workers(_, 0, _) ->
@@ -62,3 +62,21 @@ supervising_boss_actor(K) ->
   %% For calculating the number of cores present in the system
   Cores_present_in_node = erlang:system_info(logical_processors_available),
   io:format("Number of cores ~w~n", [Cores_present_in_node]).
+
+
+%% For listening to other nodes and spawn actors if they are available
+
+%% Starts the server and accommodates other nodes as they become available till mining is done on server
+start_server(K) ->
+  register(?MODULE, self()),
+
+  %% Name the current node as 'slave' and Transform it into distributed node
+  net_kernel:start([list_to_atom(string:concat("master@", IP)), longnames]),
+
+
+  erlang:set_cookie(node(), mining_cluster),
+  supervising_boss_actor(K),
+  net_kernel:stop().
+
+
+
