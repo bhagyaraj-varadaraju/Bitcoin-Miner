@@ -23,15 +23,16 @@ This project utilises actor model architecture for simulating bitcoin mining.
 
 2. The result of running your program for input 4\
 Check the below screenshot for the output with K = 4
+   ![title](output_for_4.png)
    
 3. The running time for the above is reported by time for the above and report the time. The ratio of CPU time to REAL
    TIME tells you how many cores were effectively used in the computation. If you are close to 1 you have almost no
    parallelism (points will be subtracted).\
-No of cores effectively used in the computation is approximately equal to 6.
+_No of cores effectively used in the computation is approximately equal to 6.0._
 
 4. The coin with the most 0s you managed to find.\
 We were able to mine a bitcoin with 6 leading zeroes. See the below output:
-   
+   ![title](coin_with_most_zeroes.png)
 
 5. The largest number of working machines you were able to run your code with.\
-We ran our code with two nodes i.e, two erlang systems. 
+_We ran our code with utmost two nodes i.e, two erlang systems._ 
