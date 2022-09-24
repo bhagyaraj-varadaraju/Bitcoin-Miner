@@ -23,7 +23,7 @@ create_mining_workers(Boss_PID, Num_of_actors, K) ->
   create_mining_workers(Boss_PID, Num_of_actors - 1, K).
 
 %% For listening to the messages from workers
-bitcoins_received(Num_of_messages, Num_of_bitcoins) ->
+bitcoin_receiver(Num_of_messages, Num_of_bitcoins) ->
   %% Wait until all the actors reply, by updating 'Num_of_messages' as we receive the messages
   case Num_of_messages > 0 of
     %% Check the type of message received
@@ -32,10 +32,10 @@ bitcoins_received(Num_of_messages, Num_of_bitcoins) ->
         %% Print bitcoin, update the bitcoin count and wait for the next message in queue, if its a success
         {success, String_used_for_hash, Digest} ->
           io:format("~s ~s~n", [String_used_for_hash, Digest]),
-          bitcoins_received(Num_of_messages - 1, Num_of_bitcoins + 1);
+          bitcoin_receiver(Num_of_messages - 1, Num_of_bitcoins + 1);
 
         % Just wait for the next message, if its a failure
-        failure -> bitcoins_received(Num_of_messages - 1, Num_of_bitcoins)
+        failure -> bitcoin_receiver(Num_of_messages - 1, Num_of_bitcoins)
       end;
 
     %% Print the number of bitcoins, actors were able to mine
@@ -51,7 +51,7 @@ supervising_boss_actor(K) ->
   create_mining_workers(self(), ?NUM_OF_ACTORS, K),
 
   %% Listen and print the bitcoins as they are received, Num_of_Actors = Num_of_messages to be received
-  bitcoins_received(?NUM_OF_ACTORS, 0),
+  bitcoin_receiver(?NUM_OF_ACTORS, 0),
 
   {_, CPUTime} = erlang:statistics(runtime),
   {_, RealTime} = erlang:statistics(wall_clock),
