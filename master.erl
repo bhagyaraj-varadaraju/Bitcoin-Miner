@@ -12,7 +12,8 @@
 -define(NUM_OF_ACTORS, 30000).
 
 %% API
--export([supervising_boss_actor/2, start_server_and_mine/2]).
+-export([supervising_boss_worker/2, start_server_and_mine/2]).
+
 
 %% Terminate all the slave workers, except master
 terminate_workers(SlaveList) ->
@@ -23,12 +24,15 @@ terminate_workers(SlaveList) ->
     SlaveList
   ).
 
+
+%% Spawn the actors by selecting a random worker from the list
 spawn_actors(WorkersList, K) ->
   % Select a random node from the existing list of workers
   Selected_node = rand:uniform(lists:flatlength(WorkersList)),
 
   %% Call spawn_link on that node, Args - which worker node?, which module?, which function?, what arguments?
   spawn_link(lists:nth(Selected_node, WorkersList), miner, mining_worker_actor, [self(), ?WORK_UNIT, K]).
+
 
 %% For spawning the given number of actors, also spawn in other nodes if they are connected
 create_mining_actors(WorkersList, 0, _) ->
@@ -80,7 +84,7 @@ bitcoin_receiver(Num_of_messages, Num_of_bitcoins) ->
 
 
 %% Supervises all the spawned actors and listens to their messages
-supervising_boss_actor(K, Masternode) ->
+supervising_boss_worker(K, Masternode) ->
   % Start the timer for both cpu and real time
   erlang:statistics(runtime),
   erlang:statistics(wall_clock),
@@ -118,7 +122,7 @@ start_server_and_mine(K, ServerIP) ->
   erlang:set_cookie(node(), mining_cluster),
 
   %% Start the boss actor to do mining independently
-  master:supervising_boss_actor(K, Masternode),
+  master:supervising_boss_worker(K, Masternode),
 
   %% Stop being a distributed and exit cluster
   net_kernel:stop(),

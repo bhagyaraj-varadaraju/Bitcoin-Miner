@@ -49,7 +49,7 @@ mining_worker_actor(Server_PID, Workunit, K) ->
   mine_bitcoin(Server_PID, Workunit, K).
 
 
-%% Connect to server - 192.168.0.66
+%% Connect to server
 connect_to_server(ClientIP, ServerIP) ->
   %% Register the current process ID as module name - miner
   erlang:register(?MODULE, self()),
