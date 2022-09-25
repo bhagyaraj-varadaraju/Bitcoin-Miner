@@ -24,6 +24,14 @@ eg: 1> master:start_server_and_mine(5, "192.168.0.66").
 
 #### How to execute for using multiple erlang nodes:
 First enter into erlang shell for server using 'erl'\
+Compile the all the three modules as below\
+1> c(utils).\
+{ok,utils}\
+2> c(miner).\
+{ok,miner}\
+3> c(master).\
+{ok,master}
+
 Then we have to start the server as below before starting any clients\
 1> master:start_server_and_mine(K, "ServerIP").\
 eg: 1> master:start_server_and_mine(5, "192.168.0.66").
