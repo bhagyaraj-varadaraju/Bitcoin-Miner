@@ -11,7 +11,8 @@
 -define(RAND_SUFFIX_LEN, 10).
 
 %% API
--export([mining_worker_actor/3, connect_to_server/1]).
+-export([mining_worker_actor/3, connect_to_server/2]).
+
 
 mine_bitcoin(Server_PID, Workunit, K) ->
   %% Create the string to be hashed in format "gator_id;xxxxx"
@@ -42,24 +43,26 @@ mine_bitcoin(Server_PID, Workunit, K) ->
       end
   end.
 
+
 %% Creating a different API, so the core mining logic is hidden to other modules
 mining_worker_actor(Server_PID, Workunit, K) ->
   mine_bitcoin(Server_PID, Workunit, K).
 
+
 %% Connect to server - 192.168.0.66
-connect_to_server(IP) ->
+connect_to_server(ClientIP, ServerIP) ->
   %% Register the current process ID as module name - miner
-  register(?MODULE, self()),
+  erlang:register(?MODULE, self()),
 
   %% Name the current node as 'slave' and Transform it into distributed node
-  Slavenode = list_to_atom(string:concat("slave@", IP)),
+  Slavenode = list_to_atom(string:concat("slave@", ClientIP)),
   net_kernel:start([Slavenode, longnames]),
 
   %% Set erlang cookie for the outgoing connections
   erlang:set_cookie(node(), mining_cluster),
 
   %% Connect to the server node using provided IP
-  Masternode = list_to_atom(string:concat("master@", IP)),
+  Masternode = list_to_atom(string:concat("master@", ServerIP)),
   net_kernel:connect_node(Masternode),
 
   %% Send the connect message to the master process
@@ -70,5 +73,8 @@ connect_to_server(IP) ->
     stop -> done
   end,
 
-  %% Stop being a distributed and exit cluster
-  net_kernel:stop().
+  %% Stop being a distributed node and exit cluster
+  net_kernel:stop(),
+
+  %% Unregister the master process
+  erlang:unregister(?MODULE).
