@@ -2,11 +2,6 @@
 
 This project utilises actor model architecture for simulating bitcoin mining.
 
-#### Team members
-
-1. Bhagya Raj Varadaraju, UFID: 60212561, varadaraju.b@ufl.edu
-2. Sharath Kumar Raju Addepalli, UFID: 33589528, s.addepalli@ufl.edu
-
 #### Architecture
 
 ![title](project_flow_chart.jpeg)
